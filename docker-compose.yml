@@ -1,0 +1,24 @@
+version: "3"
+
+services:
+  app:
+    image: node:16.17.0-bullseye-slim
+    restart: always
+    volumes:
+      - .:/usr/server/app
+    working_dir: /usr/server/app
+    scale: 3
+    command: bash ./src/scripts/createApp.sh
+    
+  load-balance:
+    container_name: load-balance
+    image: nginx:alpine
+    restart: unless-stopped
+    command: "nginx -g 'daemon off;'"
+    volumes:
+       - ./nginx/conf.d/nginx.conf:/etc/nginx/conf.d/nginx.conf
+    ports:
+      - "9000:9000"
+
+
+      
